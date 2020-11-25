@@ -1,11 +1,13 @@
 package eu.tutorials.springboot.springboottutorialws.ui.controllers;
 
+import eu.tutorials.springboot.springboottutorialws.ui.model.request.UserDetailsRequest;
 import eu.tutorials.springboot.springboottutorialws.ui.model.response.UserRest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 
 
 @RestController
@@ -18,10 +20,11 @@ public class UserController {
         return "get users was called with page " + page + " and limit " + limit + " and sort " + sort;
     }
 
-    @GetMapping(path = "/{userId}", produces = {
-            MediaType.APPLICATION_JSON_VALUE,
-            MediaType.APPLICATION_XML_VALUE
-    })
+    @GetMapping(path = "/{userId}",
+            produces = {
+                    MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE
+            })
     public ResponseEntity<UserRest> getUser(@PathVariable String userId) {
 
         UserRest returnValue = new UserRest();
@@ -29,12 +32,26 @@ public class UserController {
         returnValue.setFirstName("rocky");
         returnValue.setLasttName("rambo");
 
-        return new ResponseEntity<UserRest>(returnValue,HttpStatus.OK);
+        return new ResponseEntity<UserRest>(returnValue, HttpStatus.OK);
     }
 
-    @PostMapping
-    public String createUser() {
-        return "create User was called";
+    @PostMapping(
+            consumes = {
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_JSON_VALUE
+            },
+            produces = {
+                    MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE
+            })
+    public ResponseEntity<UserRest> createUser(@Valid @RequestBody UserDetailsRequest userDetailsRequest) {
+
+        UserRest returnValue = new UserRest();
+        returnValue.setEmail(userDetailsRequest.getEmail());
+        returnValue.setFirstName(userDetailsRequest.getFirstName());
+        returnValue.setLasttName(userDetailsRequest.getLasttName());
+
+        return new ResponseEntity<UserRest>(returnValue, HttpStatus.OK);
     }
 
     @PutMapping
