@@ -1,5 +1,6 @@
 package eu.tutorials.springboot.springboottutorialws.ui.controllers;
 
+import eu.tutorials.springboot.springboottutorialws.exceptions.UserServiceException;
 import eu.tutorials.springboot.springboottutorialws.ui.model.request.UpdateUserDetailsRequest;
 import eu.tutorials.springboot.springboottutorialws.ui.model.request.UserDetailsRequest;
 import eu.tutorials.springboot.springboottutorialws.ui.model.response.UserRest;
@@ -32,6 +33,8 @@ public class UserController {
                     MediaType.APPLICATION_XML_VALUE
             })
     public ResponseEntity<UserRest> getUser(@PathVariable String userId) {
+
+        if(true) throw  new UserServiceException("Custom exception");
 
         if (users.containsKey(userId)) {
 
