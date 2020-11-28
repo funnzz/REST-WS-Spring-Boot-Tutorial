@@ -4,6 +4,9 @@ import eu.tutorials.springboot.springboottutorialws.exceptions.UserServiceExcept
 import eu.tutorials.springboot.springboottutorialws.ui.model.request.UpdateUserDetailsRequest;
 import eu.tutorials.springboot.springboottutorialws.ui.model.request.UserDetailsRequest;
 import eu.tutorials.springboot.springboottutorialws.ui.model.response.UserRest;
+import eu.tutorials.springboot.springboottutorialws.userservice.UserService;
+import eu.tutorials.springboot.springboottutorialws.userservice.impl.UserServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,9 @@ public class UserController {
 
     Map<String, UserRest> users;
 
+    @Autowired
+    UserService userService;
+
     @GetMapping
     public String getUsers(@RequestParam(value = "page") int page, @RequestParam(value = "limit", defaultValue = "2") int limit,
                            @RequestParam(value = "sort", required = false) String sort) {
@@ -34,7 +40,7 @@ public class UserController {
             })
     public ResponseEntity<UserRest> getUser(@PathVariable String userId) {
 
-        if(true) throw  new UserServiceException("Custom exception");
+        if (true) throw new UserServiceException("Custom exception");
 
         if (users.containsKey(userId)) {
 
@@ -56,15 +62,8 @@ public class UserController {
             })
     public ResponseEntity<UserRest> createUser(@Valid @RequestBody UserDetailsRequest userDetailsRequest) {
 
-        UserRest returnValue = new UserRest();
-        returnValue.setEmail(userDetailsRequest.getEmail());
-        returnValue.setFirstName(userDetailsRequest.getFirstName());
-        returnValue.setLasttName(userDetailsRequest.getLasttName());
+        UserRest returnValue = userService.createUser(userDetailsRequest);
 
-        String userId = UUID.randomUUID().toString();
-        returnValue.setUserId(userId);
-        if (users == null) users = new HashMap<>();
-        users.put(userId, returnValue);
         return new ResponseEntity<UserRest>(returnValue, HttpStatus.OK);
     }
 
